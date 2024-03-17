@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "node": "^21.7.1"
+  },
+  "name": "labyrinth-backend",
+  "version": "1.0.0",
+  "description": "the backend for a labyrinth game",
+  "main": "index.ts",
+  "devDependencies": {
+    "@types/node": "^20.11.28",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --env-file=.env --watch -r ts-node/register src/index.ts",
+    "build": "tsc"
+  },
+  "author": "Timo Lehnertz",
+  "license": "ISC"
+}
