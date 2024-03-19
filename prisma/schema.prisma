@@ -1,0 +1,101 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model chat_message {
+  id                                          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  chat_room                                   String    @db.Uuid
+  users                                       String    @db.Uuid
+  message                                     String?
+  time_of_send                                DateTime  @db.Timestamp(6)
+  chat_room_chat_message_chat_roomTochat_room chat_room @relation("chat_message_chat_roomTochat_room", fields: [chat_room], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_chat_message_usersTousers             users     @relation("chat_message_usersTousers", fields: [users], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model chat_room {
+  id                                                       String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  chat_message_chat_message_chat_roomTochat_room           chat_message[]      @relation("chat_message_chat_roomTochat_room")
+  game_game_chat_roomTochat_room                           game[]              @relation("game_chat_roomTochat_room")
+  users_in_chatroom_users_in_chatroom_chat_roomTochat_room users_in_chatroom[] @relation("users_in_chatroom_chat_roomTochat_room")
+}
+
+model friend_request {
+  id                                    String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  initiator                             String   @db.Uuid
+  requested                             String   @db.Uuid
+  requestedat                           DateTime @db.Timestamp(6)
+  users_friend_request_initiatorTousers users    @relation("friend_request_initiatorTousers", fields: [initiator], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_friend_request_requestedTousers users    @relation("friend_request_requestedTousers", fields: [requested], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([initiator, requested])
+}
+
+model game {
+  id                                         String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  gamestarted                                DateTime          @db.Timestamp(6)
+  gameended                                  DateTime?         @db.Timestamp(6)
+  gamestate                                  Json
+  chat_room                                  String?           @db.Uuid
+  chat_room_game_chat_roomTochat_room        chat_room?        @relation("game_chat_roomTochat_room", fields: [chat_room], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_plays_game_user_plays_game_gameTogame user_plays_game[] @relation("user_plays_game_gameTogame")
+}
+
+model private_chat_room {
+  id                                    String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  usersa                                String @db.Uuid
+  usersb                                String @db.Uuid
+  users_private_chat_room_usersaTousers users  @relation("private_chat_room_usersaTousers", fields: [usersa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_private_chat_room_usersbTousers users  @relation("private_chat_room_usersbTousers", fields: [usersb], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user_plays_game {
+  game                            String @db.Uuid
+  userid                          String @db.Uuid
+  playerindex                     Int
+  game_user_plays_game_gameTogame game   @relation("user_plays_game_gameTogame", fields: [game], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                           users  @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([game, userid])
+}
+
+model users {
+  id                                                String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email                                             String              @unique @db.VarChar(320)
+  username                                          String              @unique @db.VarChar(20)
+  password                                          String              @db.VarChar(200)
+  gameswon                                          Int?                @default(0)
+  gameslost                                         Int?                @default(0)
+  chat_message_chat_message_usersTousers            chat_message[]      @relation("chat_message_usersTousers")
+  friend_request_friend_request_initiatorTousers    friend_request[]    @relation("friend_request_initiatorTousers")
+  friend_request_friend_request_requestedTousers    friend_request[]    @relation("friend_request_requestedTousers")
+  private_chat_room_private_chat_room_usersaTousers private_chat_room[] @relation("private_chat_room_usersaTousers")
+  private_chat_room_private_chat_room_usersbTousers private_chat_room[] @relation("private_chat_room_usersbTousers")
+  user_plays_game                                   user_plays_game[]
+  users_are_friends_users_are_friends_useraTousers  users_are_friends[] @relation("users_are_friends_useraTousers")
+  users_are_friends_users_are_friends_userbTousers  users_are_friends[] @relation("users_are_friends_userbTousers")
+  users_in_chatroom_users_in_chatroom_usersTousers  users_in_chatroom[] @relation("users_in_chatroom_usersTousers")
+}
+
+model users_are_friends {
+  usera                                String   @db.Uuid
+  userb                                String   @db.Uuid
+  since                                DateTime @db.Timestamp(6)
+  users_users_are_friends_useraTousers users    @relation("users_are_friends_useraTousers", fields: [usera], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_users_are_friends_userbTousers users    @relation("users_are_friends_userbTousers", fields: [userb], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([usera, userb])
+}
+
+model users_in_chatroom {
+  chat_room                                        String    @db.Uuid
+  users                                            String    @db.Uuid
+  chat_room_users_in_chatroom_chat_roomTochat_room chat_room @relation("users_in_chatroom_chat_roomTochat_room", fields: [chat_room], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_users_in_chatroom_usersTousers             users     @relation("users_in_chatroom_usersTousers", fields: [users], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([chat_room, users])
+}
