@@ -1,7 +1,7 @@
 import { friend_request } from "@prisma/client";
 import { JWT } from "next-auth/jwt";
 import { Namespace, Server, Socket } from "socket.io";
-import { jwtFromCookieHeader } from "../../lib/jwt";
+import { jwtFromCookieHeader } from "../../../lib/jwt";
 
 export abstract class AuthenticatedWebSocketEndpoint {
   protected io: Namespace;

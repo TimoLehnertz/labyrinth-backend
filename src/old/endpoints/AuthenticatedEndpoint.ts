@@ -1,4 +1,4 @@
-import { Endpoint } from "./Endpoint";
+import { Endpoint } from "./Endpoint backup";
 import { JWT, decode } from "next-auth/jwt";
 import { Request, Response } from "express";
 import { Schema, TypeOf, z } from "zod";

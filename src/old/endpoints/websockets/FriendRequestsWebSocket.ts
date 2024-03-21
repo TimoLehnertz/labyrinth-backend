@@ -3,7 +3,7 @@ import { JWT } from "next-auth/jwt";
 import { Namespace, Server, Socket } from "socket.io";
 import { AuthenticatedWebSocketEndpoint as AuthenticatedWebSocket } from "./AuthenticatedWebSocket";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import prisma from "../../db";
+import prisma from "../../../db";
 
 export class FriendRequestsWebSocket extends AuthenticatedWebSocket {
   private static instances: FriendRequestsWebSocket[] = [];
