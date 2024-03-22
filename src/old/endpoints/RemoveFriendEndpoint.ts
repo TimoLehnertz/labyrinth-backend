@@ -2,7 +2,7 @@ import { JWT } from "next-auth/jwt";
 import { AuthenticatedEndpoint } from "./AuthenticatedEndpoint";
 import { Request, Response } from "express";
 import { TypeOf, z } from "zod";
-import prisma from "../db";
+import prisma from "../../db";
 
 export const removeFriendEndpointSchema = z.object({
   friendID: z.string().min(2),

@@ -1,10 +1,10 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model chat_message {
@@ -82,13 +82,12 @@ model users {
 }
 
 model users_are_friends {
+  id                                   String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   usera                                String   @db.Uuid
   userb                                String   @db.Uuid
   since                                DateTime @db.Timestamp(6)
   users_users_are_friends_useraTousers users    @relation("users_are_friends_useraTousers", fields: [usera], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users_users_are_friends_userbTousers users    @relation("users_are_friends_userbTousers", fields: [userb], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([usera, userb])
 }
 
 model users_in_chatroom {
