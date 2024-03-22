@@ -1,15 +1,17 @@
-import { AuthenticatedUser } from "./AuthenticatedUser";
-import { TypeFromRequestValidator } from "./Endpoints/src/Endpoint";
-import { EndpointError } from "./Endpoints/src/EndpointErrors/EndpointErrors";
-import { jwtAuthenticator } from "./Authenticators/JwtAuthenticator";
-import prisma from "./db";
+import { jwtAuthenticator } from "../Authenticators/JwtAuthenticator";
+import prisma from "../db";
 import {
   AbstractAddFriendEndpoint,
   AddFriendEndpointResponse,
   AddFriendEndpointValidator,
-} from "./Labyrinth-Endpoint-Definitions/EndpointDefinitions";
-import { zodValidator } from "./InputValidators/ZodInputValidator";
+  AuthenticatedUser,
+} from "../Labyrinth-Endpoint-Definitions/EndpointDefinitions";
+import { zodValidator } from "../InputValidators/ZodInputValidator";
 import { z } from "zod";
+import {
+  EndpointError,
+  TypeFromRequestValidator,
+} from "express-api-helper-classes";
 
 export const addFriendEndpointValidator: AddFriendEndpointValidator = {
   POST: zodValidator(
@@ -56,13 +58,13 @@ export class AddFriendEndpoint extends AbstractAddFriendEndpoint {
     if (existingRequests) {
       return new EndpointError(400, "already sent"); // @todo
     }
-    const friendRequest = await prisma.friend_request.create({
+    await prisma.friend_request.create({
       data: {
         requestedat: new Date(),
         initiator: friendUser.id,
         requested: user.id,
       },
     });
-    return {}; // empty response indicating succsess
+    return { hello: "hello" }; // empty response indicating succsess
   }
 }

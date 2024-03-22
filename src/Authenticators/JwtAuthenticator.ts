@@ -2,14 +2,12 @@
  * @author Timo Lehnertz
  */
 import { Request } from "express";
+import { AuthenticationEndpointError } from "express-api-helper-classes";
+import { JWT, decode } from "next-auth/jwt";
 import {
   AuthenticatedUser,
   authenticatedUserSchema,
-} from "../AuthenticatedUser";
-import { Authorizer } from "../Endpoints/src/AuthorizedEndpoint";
-import { JWT, decode } from "next-auth/jwt";
-import { AuthenticationEndpointError } from "../Endpoints/src/EndpointErrors/EndpointErrors";
-import { Authenticator } from "../Endpoints/src/AuthenticatedEndpoint";
+} from "../Labyrinth-Endpoint-Definitions/EndpointDefinitions";
 
 function getCookie(header: string, name: string): string | null {
   const cookies = header.split(";");
